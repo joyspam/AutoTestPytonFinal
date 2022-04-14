@@ -1,7 +1,7 @@
 import pytest
 from selenium import webdriver
 
-#функция выбора параметров при запуске: окружение и язык
+#функция выбора параметров при запуске: окружение, язык и отключение браузера Chrome
 def pytest_addoption(parser):
     #выбор окружения chrome or firefox
     parser.addoption('--browser_name', action='store', default='chrome',
@@ -10,16 +10,23 @@ def pytest_addoption(parser):
     parser.addoption('--language',  action='store', default='en',
                      help="Choose your language(ru, en, ...)")
 
+    #выбор отключения браузера Chrome
+    parser.addoption('--headless', action='store', default=None,
+                     help="Open a browser invisible, without GUI is used by default")
+
 @pytest.fixture(scope="function")
 def browser(request):
     browser_name = request.config.getoption("browser_name")
     language = request.config.getoption("language")
+    headless = request.config.getoption('headless')
     browser = None
     if browser_name == "chrome":
         print("\nstart chrome browser for test..")
         from selenium.webdriver.chrome.options import Options
         options = Options()
         options.add_experimental_option('prefs', {'intl.accept_languages': language})
+        if headless == 'true':
+            options.add_argument('headless')
         browser = webdriver.Chrome(options=options)
         browser.implicitly_wait(5)
     elif browser_name == "firefox":
