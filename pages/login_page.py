@@ -10,7 +10,6 @@ class LoginPage(BasePage):
         self.should_be_register_form()
 
     def should_be_login_url(self):
-        
         # реализуйте проверку на корректный url адрес
         assert "login" in self.url, "'login' is not in current url"
 

@@ -12,6 +12,14 @@ class BasePage:
     def open(self):
         self.browser.get(self.url)
 
+    # элемент появляется на странице
+    def is_element_present(self, how, what):
+        try:
+            self.browser.find_element(how, what)
+        except NoSuchElementException:
+            return False
+        return True
+
     # элемент не появляется на странице в течение заданного времени:
     def is_not_element_present(self, how, what, timeout=4):
         try:

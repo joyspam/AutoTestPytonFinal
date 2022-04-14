@@ -3,7 +3,7 @@ from .locators import ProductPageLocators
 from selenium.common.exceptions import NoAlertPresentException # в начале файла для подсчета кода
 import math
 
-class PageObject(BasePage):
+class ProductPage(BasePage):
     #добавление продукта в корзину
     def add_product_to_basket(self):
         add_to_basket = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET)
@@ -44,6 +44,4 @@ class PageObject(BasePage):
     def should_be_disappeared_message(self):
         assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
             "Success message is not disappeared, but should be"
-
-
 

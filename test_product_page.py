@@ -1,4 +1,4 @@
-from .pages.product_page import PageObject
+from .pages.product_page import ProductPage
 import pytest #чтобы работали маркированные тесты
 
 
@@ -8,10 +8,10 @@ import pytest #чтобы работали маркированные тесты
                                   8, 9])
 
 #продукт можно добавить в корзину
-@pytest.mark.parametrize
+@pytest.mark.skip(reason="promo is over")
 def test_guest_can_add_product_to_basket(browser, link):
     link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{link}"
-    page = PageObject(browser,link)
+    page = ProductPage(browser,link)
     page.open()
     page.add_product_to_basket() #добавление продукта в корзину
     page.solve_quiz_and_get_code() #метод для подсчета кода
@@ -23,7 +23,7 @@ def test_guest_can_add_product_to_basket(browser, link):
 #нет сообщения об успехе при добавлении товара в корзину (элемент не появляется в течении заданного времени)
 def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = PageObject(browser, link)
+    page = ProductPage(browser, link)
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
     page.should_not_be_success_message()
@@ -31,14 +31,14 @@ def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
 #нет сообщения об успехе при открытии страницы (элемент не появляется в течении заданного времени)
 def test_guest_cant_see_success_message(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = PageObject(browser, link)
+    page = ProductPage(browser, link)
     page.open()
     page.should_not_be_success_message()
 
 #нет сообщения об успехе при добавлении товара в корзину (#элемент исчезает)
 def test_message_disappeared_after_adding_product_to_basket(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = PageObject(browser, link)
+    page = ProductPage(browser, link)
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
     page.should_be_disappeared_message()
