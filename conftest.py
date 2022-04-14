@@ -28,16 +28,14 @@ def browser(request):
         if headless == 'true':
             options.add_argument('headless')
         browser = webdriver.Chrome(options=options)
-        browser.implicitly_wait(5)
     elif browser_name == "firefox":
         print("\nstart firefox browser for test..")
         fp = webdriver.FirefoxProfile()
         fp.set_preference("intl.accept_languages", language)
         browser = webdriver.Firefox(firefox_profile=fp)
-        browser.implicitly_wait(5)
     else:
         raise pytest.UsageError("--browser_name should be chrome or firefox")
-    yield browser
+    yield browser #поведение браузера в конце теста
     print("\nquit browser..")
     browser.quit()
 
