@@ -8,7 +8,7 @@ class LoginPageLocators():
     LOGIN_FORM = (By.CSS_SELECTOR, "#login_form")
     REGISTER_FORM = (By.CSS_SELECTOR, "#register_form")
 
-class PageObjectLocators():
+class ProductPageLocators():
     #добавление продукта в корзину
     ADD_TO_BASKET = (By.CSS_SELECTOR, ".btn.btn-lg.btn-primary.btn-add-to-basket")
     #проверка что добавился тот же товар
@@ -17,3 +17,4 @@ class PageObjectLocators():
     #проверка что цена совпадает
     EXPECTED_PRICE = (By.CSS_SELECTOR, '.product_main .price_color')
     ACTUAL_PRICE = (By.CSS_SELECTOR, '.alert-info .alertinner strong')
+    SUCCESS_MESSAGE = (By.CSS_SELECTOR, ".alert-success")
