@@ -44,10 +44,18 @@ class BasePage:
 
 #методы для всех страниц
 
+    # переход в корзину со страниц
+    def go_to_basket(self):
+        assert self.is_element_present(*BasePageLocators.GO_TO_BASKET), "No link to basket or invalid selector"
+        go_to_basket = self.browser.find_element(*BasePageLocators.GO_TO_BASKET)
+        go_to_basket.click()
+
+    # переход на страницу логина со страниц
     def go_to_login_page(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK_INVALID), "You should change LOGIN_LINK_INVALID here and in locators.py"
         link = self.browser.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
         link.click()
 
+    # можно видеть ссылку на логин на страницах
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
