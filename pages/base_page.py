@@ -5,13 +5,13 @@ from .locators import BasePageLocators
 
 
 class BasePage:
-    #метод, который вызывается, когда мы создаем объект
+    # метод, который вызывается, когда мы создаем объект
     def __init__(self, browser, url, timeout=10):
         self.browser = browser
         self.url = url
         self.browser.implicitly_wait(timeout)
 
-    #должен открывать нужную страницу в браузере, используя метод get()
+    # должен открывать нужную страницу в браузере, используя метод get()
     def open(self):
         self.browser.get(self.url)
 
@@ -42,7 +42,7 @@ class BasePage:
 
         return True
 
-#методы для всех страниц
+# методы для всех страниц
 
     # переход в корзину со страниц
     def go_to_basket(self):
@@ -52,10 +52,15 @@ class BasePage:
 
     # переход на страницу логина со страниц
     def go_to_login_page(self):
-        assert self.is_element_present(*BasePageLocators.LOGIN_LINK_INVALID), "You should change LOGIN_LINK_INVALID here and in locators.py"
-        link = self.browser.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
+        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "You should change LOGIN_LINK_INVALID"
+        link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
         link.click()
 
     # можно видеть ссылку на логин на страницах
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
+
+    # пользователь зарегистрирован
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+                                                                     " probably unauthorised user"

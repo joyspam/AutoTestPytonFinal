@@ -1,45 +1,54 @@
+from .pages.login_page import LoginPage
 from .pages.base_page import BasePage
 from .pages.basket_page import BasketPage
 from .pages.product_page import ProductPage
-import pytest #чтобы работали маркированные тесты
+import pytest
+import time
 
 
-
-@pytest.mark.parametrize('link', [0, 1, 2, 3, 4, 5, 6,
-                                  pytest.param(7, marks=pytest.mark.xfail(reason="error on page")),
-                                  8, 9])
-
-#продукт можно добавить в корзину
-@pytest.mark.skip(reason="promo is over")
-def test_guest_can_add_product_to_basket(browser, link):
-    link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer{link}"
-    page = ProductPage(browser,link)
-    page.open()
-    page.add_product_to_basket() #добавление продукта в корзину
-    page.solve_quiz_and_get_code() #метод для подсчета кода
-    page.should_be_item_in_basket() #добавился тот же товар
-    page.should_be_price_in_basket() #цена совпадает с добавленным товаром
-
-#негативные проверки
-
-#нет сообщения об успехе при добавлении товара в корзину (элемент не появляется в течении заданного времени)
-@pytest.mark.skip
-def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
-    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+# гость может добавить в корзину
+@pytest.mark.need_review
+def test_guest_user_can_add_product_to_basket(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
     page = ProductPage(browser, link)
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
-    page.should_not_be_success_message()
+    page.should_be_item_in_basket()  # добавился тот же товар
+    page.should_be_price_in_basket()  # цена совпадает с добавленным товаром
 
-#нет сообщения об успехе при открытии страницы (элемент не появляется в течении заданного времени)
-@pytest.mark.skip
-def test_guest_cant_see_success_message(browser):
-    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = ProductPage(browser, link)
-    page.open()
-    page.should_not_be_success_message()
 
-#нет сообщения об успехе при добавлении товара в корзину (#элемент исчезает)
+# пользователь может добавить в корзину
+class TestUserAddToBasketFromProductPage:
+    # создаем нового пользователя
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/accounts/login/"
+        page = LoginPage(browser, link)
+        page.open()
+        page.register_new_user(email=str(time.time()) + "@fakemail.org", password='1a3b5c7d9')
+        page.should_be_authorized_user()
+
+    # нет сообщения об успехе при добавлении товара в корзину (элемент не появляется в течении заданного времени)
+    @pytest.mark.xfail
+    def test_user_cant_see_success_message(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = ProductPage(browser, link)
+        page.open()
+        page.add_product_to_basket()  # добавление продукта в корзину
+        page.should_not_be_success_message()
+
+    # добавление товара, в корзине тот же товар, цена совпадает
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
+        page = ProductPage(browser, link)
+        page.open()
+        page.add_product_to_basket()  # добавление продукта в корзину
+        page.should_be_item_in_basket()  # добавился тот же товар
+        page.should_be_price_in_basket()  # цена совпадает с добавленным товаром
+
+
+# нет сообщения об успехе при добавлении товара в корзину (#элемент исчезает)
 @pytest.mark.skip
 def test_message_disappeared_after_adding_product_to_basket(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
@@ -48,7 +57,8 @@ def test_message_disappeared_after_adding_product_to_basket(browser):
     page.add_product_to_basket()  # добавление продукта в корзину
     page.should_be_disappeared_message()
 
-#гость может видеть ссылку на страницу с логином
+
+# гость может видеть ссылку на страницу с логином
 @pytest.mark.skip
 def test_guest_should_see_login_link_on_product_page(browser):
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
@@ -56,15 +66,18 @@ def test_guest_should_see_login_link_on_product_page(browser):
     page.open()
     page.should_be_login_link()
 
-#гость может перейти на страницу с логином из страницы с товаром
-@pytest.mark.skip
+
+# гость может перейти на страницу с логином из страницы с товаром
+@pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page(browser):
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, link)
     page.open()
     page.go_to_login_page()
 
-#гость может перейти в корзину и увидеть там товар(ы)
+
+# гость может перейти в корзину и увидеть там товар(ы)
+@pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     page = BasePage(browser, link)
@@ -73,4 +86,3 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     page = BasketPage(browser, link)
     page.products_in_basket()
     page.basket_text()
-
