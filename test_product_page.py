@@ -14,16 +14,6 @@ email = str(time.time()) + "@fakemail.org"
 password = '1a3b5c7d9'
 
 
-# гость может добавить в корзину
-@pytest.mark.need_review
-def test_guest_user_can_add_product_to_basket(browser):
-    page = ProductPage(browser, productlink)
-    page.open()
-    page.add_product_to_basket()  # добавление продукта в корзину
-    page.should_be_item_in_basket()  # добавился тот же товар
-    page.should_be_price_in_basket()  # цена совпадает с добавленным товаром
-
-
 # пользователь может добавить в корзину
 class TestUserAddToBasketFromProductPage:
     # создаем нового пользователя
@@ -59,6 +49,16 @@ def test_message_disappeared_after_adding_product_to_basket(browser):
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
     page.should_be_disappeared_message()
+
+
+# гость может добавить в корзину
+@pytest.mark.need_review
+def test_guest_user_can_add_product_to_basket(browser):
+    page = ProductPage(browser, productlink)
+    page.open()
+    page.add_product_to_basket()  # добавление продукта в корзину
+    page.should_be_item_in_basket()  # добавился тот же товар
+    page.should_be_price_in_basket()  # цена совпадает с добавленным товаром
 
 
 # гость может видеть ссылку на страницу с логином
