@@ -5,10 +5,13 @@ from .pages.product_page import ProductPage
 import pytest
 import time
 
-
+# ссылки
 link = "http://selenium1py.pythonanywhere.com/accounts"  # ссылка на главную
 loginlink = "http://selenium1py.pythonanywhere.com/accounts/login/"  # ссылка на страницу с логином
 productlink = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"  # ссылка на страницу с товаром
+# логин и пароль для регистрации
+email = str(time.time()) + "@fakemail.org"
+password = '1a3b5c7d9'
 
 
 # гость может добавить в корзину
@@ -28,7 +31,7 @@ class TestUserAddToBasketFromProductPage:
     def setup(self, browser):
         page = LoginPage(browser, loginlink)
         page.open()
-        page.register_new_user(email=str(time.time()) + "@fakemail.org", password='1a3b5c7d9')
+        page.register_new_user(email, password)
         page.should_be_authorized_user()
 
     # нет сообщения об успехе при добавлении товара в корзину (элемент не появляется в течении заданного времени)
