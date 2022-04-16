@@ -6,11 +6,15 @@ import pytest
 import time
 
 
+link = "http://selenium1py.pythonanywhere.com/accounts"  # ссылка на главную
+loginlink = "http://selenium1py.pythonanywhere.com/accounts/login/"  # ссылка на страницу с логином
+productlink = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"  # ссылка на страницу с товаром
+
+
 # гость может добавить в корзину
 @pytest.mark.need_review
 def test_guest_user_can_add_product_to_basket(browser):
-    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
-    page = ProductPage(browser, link)
+    page = ProductPage(browser, productlink)
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
     page.should_be_item_in_basket()  # добавился тот же товар
@@ -22,8 +26,7 @@ class TestUserAddToBasketFromProductPage:
     # создаем нового пользователя
     @pytest.fixture(scope="function", autouse=True)
     def setup(self, browser):
-        link = "http://selenium1py.pythonanywhere.com/accounts/login/"
-        page = LoginPage(browser, link)
+        page = LoginPage(browser, loginlink)
         page.open()
         page.register_new_user(email=str(time.time()) + "@fakemail.org", password='1a3b5c7d9')
         page.should_be_authorized_user()
@@ -31,8 +34,7 @@ class TestUserAddToBasketFromProductPage:
     # нет сообщения об успехе при добавлении товара в корзину (элемент не появляется в течении заданного времени)
     @pytest.mark.xfail
     def test_user_cant_see_success_message(self, browser):
-        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-        page = ProductPage(browser, link)
+        page = ProductPage(browser, productlink)
         page.open()
         page.add_product_to_basket()  # добавление продукта в корзину
         page.should_not_be_success_message()
@@ -40,8 +42,7 @@ class TestUserAddToBasketFromProductPage:
     # добавление товара, в корзине тот же товар, цена совпадает
     @pytest.mark.need_review
     def test_user_can_add_product_to_basket(self, browser):
-        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
-        page = ProductPage(browser, link)
+        page = ProductPage(browser, productlink)
         page.open()
         page.add_product_to_basket()  # добавление продукта в корзину
         page.should_be_item_in_basket()  # добавился тот же товар
@@ -49,20 +50,18 @@ class TestUserAddToBasketFromProductPage:
 
 
 # нет сообщения об успехе при добавлении товара в корзину (#элемент исчезает)
-@pytest.mark.skip
+
 def test_message_disappeared_after_adding_product_to_basket(browser):
-    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = ProductPage(browser, link)
+    page = ProductPage(browser, productlink)
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
     page.should_be_disappeared_message()
 
 
 # гость может видеть ссылку на страницу с логином
-@pytest.mark.skip
+
 def test_guest_should_see_login_link_on_product_page(browser):
-    link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
-    page = ProductPage(browser, link)
+    page = ProductPage(browser, productlink)
     page.open()
     page.should_be_login_link()
 
@@ -70,8 +69,7 @@ def test_guest_should_see_login_link_on_product_page(browser):
 # гость может перейти на страницу с логином из страницы с товаром
 @pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page(browser):
-    link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
-    page = ProductPage(browser, link)
+    page = ProductPage(browser, productlink)
     page.open()
     page.go_to_login_page()
 
@@ -79,7 +77,6 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
 # гость может перейти в корзину и увидеть там товар(ы)
 @pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
-    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     page = BasePage(browser, link)
     page.open()
     page.go_to_basket()
