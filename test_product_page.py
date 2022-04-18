@@ -53,7 +53,7 @@ def test_message_disappeared_after_adding_product_to_basket(browser):
 
 # гость может добавить в корзину
 @pytest.mark.need_review
-def test_guest_user_can_add_product_to_basket(browser):
+def test_guest_can_add_product_to_basket(browser):
     page = ProductPage(browser, productlink)
     page.open()
     page.add_product_to_basket()  # добавление продукта в корзину
